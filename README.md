@@ -107,13 +107,6 @@ The instruction memory loads machine code from:
 program.hex
 ```
 
-The file must be placed in the folder where `./simv` is executed.
-Example:
-
-```bash
-./simv
-```
-
 ## Example Program
 
 ```assembly
