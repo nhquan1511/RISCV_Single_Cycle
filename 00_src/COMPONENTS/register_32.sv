@@ -13,16 +13,11 @@ module register_32 #(
   output wire [WIDTH-1:0]  q_o
 );
 //============================================
-genvar i;
-generate
-    for (i = 0; i < WIDTH; i++) begin : GEN_DFF
-        d_flip_flop dff (
-            .d_i  (d_i[i]),
-            .clk_i(clk_i),
-            .rst_i(rst_i),
-            .wr_i (wr_i),
-            .q_o  (q_o[i])
-        );
+  always_ff @(posedge clk_i or posedge rst_i) begin
+    if (rst_i) begin
+      q_o <= 0;
+    end else if (wr_i) begin
+      q_o <= d_i;
     end
-endgenerate
+end
 endmodule
