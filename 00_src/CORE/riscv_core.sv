@@ -1,9 +1,9 @@
-// RISC-V Core (Without Imem and Dmem)
-// Module: RISC-V Core
+// RISC-V Single-Cycle Core (Without Imem and Dmem)
+// Module: RISC-V Single-Cycle Core
 // Date 18/7/2026
 // Updated: 19/7/2026
 //==============================================
-module riscv_core #(
+module singlecycle_core #(
   parameter WIDTH = 32
 )(
   input   wire             clk_i,
@@ -27,7 +27,7 @@ module riscv_core #(
 
   wire              memread;
   wire [1:0]        aluop;
-  wire              wb [0:1];
+  wire [1:0]        wb;
   wire              alusrc1;
   wire              alusrc2;
   wire              regwrite;
@@ -109,8 +109,8 @@ module riscv_core #(
   ) pccu (
     .funct3_i(instr_i[14:12]),
     .branchsel_i(branchsel[0:1]),
-    .r1_i(r1_alu),
-    .r2_i(r2_alu),
+    .r1_i(r1),
+    .r2_i(r2),
     .en_o(en)
   );
 
@@ -122,7 +122,7 @@ module riscv_core #(
     .mode_i(1'b0),
     .s_o(temp_pcadd4),
     .cout_o(),
-    .overflow()
+    .overflow_o()
   );
 
   add_subtract #(
@@ -133,18 +133,18 @@ module riscv_core #(
     .mode_i(1'b0),
     .s_o(temp_pcaddimm),
     .cout_o(),
-    .overflow()
+    .overflow_o()
   ); 
 
   add_subtract #(
     .WIDTH(WIDTH)
   ) rs1addimm (
-    .a_i(r1_alu),
+    .a_i(r1),
     .b_i(imm),
     .mode_i(1'b0),
     .s_o(temp_rs1addimm),
-    .cout(),
-    .overflow()
+    .cout_o(),
+    .overflow_o()
   );
 
   assign temp1_i[0] = temp_pcadd4;
@@ -169,6 +169,7 @@ module riscv_core #(
     .next_pc_i(next_pc),
     .clk_i(clk_i),
     .rst_i(rst_i),
+    .stall_i(1'b0),
     .pc_o(imem_addr_o)
   );
 //=======================================================
